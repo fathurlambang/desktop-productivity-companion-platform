@@ -27,6 +27,7 @@ playwright-report/
 *.swp
 *.swo
 *~
+.impeccable
 
 # OS
 .DS_Store
