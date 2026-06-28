@@ -11,6 +11,11 @@ export function showNotification(options: {
   body: string
   onClick?: () => void
 }): void {
+  if (!Notification.isSupported()) {
+    console.warn('Notifications not supported on this system')
+    return
+  }
+
   const notification = new Notification({
     title: options.title,
     body: options.body,

@@ -56,6 +56,22 @@ To package the application for your operating system:
 npm run build
 ```
 
+## Download & Install
+
+### macOS (ARM64)
+
+1. Download `Focus Companion-1.0.0-arm64.dmg` from [Releases](https://github.com/fathurlambang/desktop-productivity-companion-platform/releases)
+2. Open the DMG and drag **Focus Companion** to Applications
+3. **First launch:** The app is unsigned, so macOS will block it. Fix with:
+   ```bash
+   xattr -cr "/Applications/Focus Companion.app"
+   ```
+4. Open the app normally from Applications or Spotlight
+
+> **Why this happens:** macOS Gatekeeper flags unsigned downloaded apps with a quarantine attribute. The `xattr -cr` command removes this flag.
+
+**Alternative:** Right-click the app → Open → Click "Open" in the dialog.
+
 ## Design System
 
 Focus Companion strictly adheres to a **Swiss / International Design System**:

@@ -36,13 +36,13 @@ export const taskRepository = {
       title: input.title,
       description: input.description ?? '',
       priority: input.priority ?? 0,
-    }).returning().get()
+    } as any).returning().get()
   },
 
   update(id: number, input: UpdateTaskInput) {
     const db = getDatabase()
     return db.update(tasks)
-      .set({ ...input, updatedAt: new Date().toISOString() })
+      .set({ ...input, updatedAt: new Date().toISOString() } as any)
       .where(eq(tasks.id, id))
       .returning()
       .get()
@@ -56,7 +56,7 @@ export const taskRepository = {
   complete(id: number) {
     const db = getDatabase()
     return db.update(tasks)
-      .set({ status: 'completed', updatedAt: new Date().toISOString() })
+      .set({ status: 'completed', updatedAt: new Date().toISOString() } as any)
       .where(eq(tasks.id, id))
       .returning()
       .get()

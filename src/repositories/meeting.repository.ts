@@ -46,13 +46,13 @@ export const meetingRepository = {
       startTime: input.startTime,
       endTime: input.endTime,
       reminderBefore: input.reminderBefore ?? 5,
-    }).returning().get()
+    } as any).returning().get()
   },
 
   update(id: number, input: UpdateMeetingInput) {
     const db = getDatabase()
     return db.update(meetings)
-      .set(input)
+      .set(input as any)
       .where(eq(meetings.id, id))
       .returning()
       .get()
@@ -66,7 +66,7 @@ export const meetingRepository = {
   complete(id: number) {
     const db = getDatabase()
     return db.update(meetings)
-      .set({ status: 'completed' })
+      .set({ status: 'completed' } as any)
       .where(eq(meetings.id, id))
       .returning()
       .get()

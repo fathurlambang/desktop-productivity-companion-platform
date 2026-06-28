@@ -60,4 +60,21 @@ export const ipc = {
     updateState: (state: string) =>
       api.ipcRenderer.send('tray:update-state', state),
   },
+
+  timer: {
+    start: (duration: number, sessionCount: number) =>
+      api.ipcRenderer.send('timer:start', duration, sessionCount),
+    startBreak: (duration: number, isLongBreak: boolean) =>
+      api.ipcRenderer.send('timer:start-break', duration, isLongBreak),
+    pause: () => api.ipcRenderer.send('timer:pause'),
+    resume: () => api.ipcRenderer.send('timer:resume'),
+    stop: () => api.ipcRenderer.send('timer:stop'),
+    getState: () => api.ipcRenderer.invoke('timer:get-state'),
+    onTick: (callback: (data: { remaining: number; state: string }) => void) =>
+      api.ipcRenderer.on('timer:tick', callback as any),
+    onState: (callback: (data: { state: string; type: string; remaining: number; total: number; sessionCount: number }) => void) =>
+      api.ipcRenderer.on('timer:state', callback as any),
+    onNotification: (callback: (data: { type: string; sessionCount?: number }) => void) =>
+      api.ipcRenderer.on('timer:notification', callback as any),
+  },
 }

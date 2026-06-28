@@ -4,6 +4,7 @@ import { initializeDatabase, closeDatabase } from '../src/database'
 import { registerIpcHandlers } from '../src/ipc/handlers'
 import { createTray, destroyTray, updateTrayState, updateTrayTimer } from './tray'
 import { setMainWindowForNotifications, notifyPomodoroComplete, notifyBreakComplete, notifyTaskComplete } from './notifications'
+import { timerService } from './timer-service'
 
 let mainWindow: BrowserWindow | null = null
 const isDev = !app.isPackaged
@@ -26,6 +27,7 @@ function createWindow(): void {
     mainWindow?.show()
     if (mainWindow) {
       setMainWindowForNotifications(mainWindow)
+      timerService.setWindow(mainWindow)
     }
   })
 
@@ -73,10 +75,37 @@ function registerNotificationHandlers(): void {
   })
 }
 
+function registerTimerHandlers(): void {
+  ipcMain.on('timer:start', (_event, duration: number, sessionCount: number) => {
+    timerService.start(duration, sessionCount)
+  })
+
+  ipcMain.on('timer:start-break', (_event, duration: number, isLongBreak: boolean) => {
+    timerService.startBreak(duration, isLongBreak)
+  })
+
+  ipcMain.on('timer:pause', () => {
+    timerService.pause()
+  })
+
+  ipcMain.on('timer:resume', () => {
+    timerService.resume()
+  })
+
+  ipcMain.on('timer:stop', () => {
+    timerService.stop()
+  })
+
+  ipcMain.handle('timer:get-state', () => {
+    return timerService.getState()
+  })
+}
+
 app.whenReady().then(() => {
   initializeDatabase()
   registerIpcHandlers()
   registerNotificationHandlers()
+  registerTimerHandlers()
   createWindow()
 
   if (mainWindow) {

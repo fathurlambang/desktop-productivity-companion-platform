@@ -36,7 +36,7 @@ function getTaskList(): Electron.MenuItemConstructorOptions[] {
       return [{ label: 'No tasks', enabled: false }]
     }
 
-    return tasks.map((task) => ({
+    return tasks.map((task: any) => ({
       label: task.title,
       type: 'radio' as const,
       checked: task.id === currentTaskId,

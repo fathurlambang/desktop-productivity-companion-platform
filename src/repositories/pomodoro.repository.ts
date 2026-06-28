@@ -30,13 +30,13 @@ export const pomodoroRepository = {
       taskId: input.taskId,
       startTime: input.startTime,
       duration: input.duration,
-    }).returning().get()
+    } as any).returning().get()
   },
 
   complete(id: number, endTime: string) {
     const db = getDatabase()
     return db.update(pomodoroSessions)
-      .set({ endTime, completed: true })
+      .set({ endTime, completed: true } as any)
       .where(eq(pomodoroSessions.id, id))
       .returning()
       .get()

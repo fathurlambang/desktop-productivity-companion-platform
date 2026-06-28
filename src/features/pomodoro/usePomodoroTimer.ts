@@ -1,39 +1,35 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { usePomodoroStore } from './store'
 import { ipc } from '@/ipc/bridge'
 
 export function usePomodoroTimer() {
-  const { state, remaining, tick } = usePomodoroStore()
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const { syncFromMain, updateRemaining } = usePomodoroStore()
 
   useEffect(() => {
-    if (state === 'running') {
-      intervalRef.current = setInterval(() => {
-        tick()
-      }, 1000)
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-        intervalRef.current = null
+    const unsubTick = ipc.timer.onTick((data) => {
+      updateRemaining(data.remaining)
+      ipc.tray.updateTimer(data.remaining)
+    })
+
+    const unsubState = ipc.timer.onState((data) => {
+      syncFromMain(data as any)
+      ipc.tray.updateState(data.state)
+    })
+
+    const unsubNotification = ipc.timer.onNotification((data) => {
+      if (data.type === 'pomodoro-complete') {
+        ipc.notifications.pomodoroComplete(data.sessionCount ?? 0)
+      } else if (data.type === 'break-complete') {
+        ipc.notifications.breakComplete()
       }
-    }
+    })
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
+      unsubTick()
+      unsubState()
+      unsubNotification()
     }
-  }, [state, tick])
-
-  useEffect(() => {
-    ipc.tray.updateState(state)
-  }, [state])
-
-  useEffect(() => {
-    if (state === 'running' || state === 'paused') {
-      ipc.tray.updateTimer(remaining)
-    }
-  }, [state, remaining])
+  }, [syncFromMain, updateRemaining])
 
   return usePomodoroStore()
 }
