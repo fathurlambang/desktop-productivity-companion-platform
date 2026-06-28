@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/electron-builder.json",
+  "appId": "com.focuscompanion.app",
+  "productName": "Focus Companion",
+  "directories": {
+    "buildResources": "build"
+  },
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*"
+  ],
+  "mac": {
+    "target": ["dmg", "zip"],
+    "artifactName": "${productName}-${version}-${arch}.${ext}"
+  },
+  "win": {
+    "target": ["nsis", "portable"],
+    "artifactName": "${productName}-${version}-setup.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true
+  }
+}
